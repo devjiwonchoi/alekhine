@@ -1,8 +1,8 @@
 export class Board {
-  constructor(private readonly fetcher: Function) {}
+  constructor(private readonly fetcher: Function, private readonly streamer: Function) {}
 
   public events() {
-    return this.fetcher(`/stream/event`)
+    return this.streamer(`/stream/event`)
   }
 
   // TODO: seek()
@@ -50,7 +50,7 @@ export class Board {
   // }
 
   public stream({ gameId }: { gameId: string }) {
-    return this.fetcher(`/board/game/stream/${gameId}`)
+    return this.streamer(`/board/game/stream/${gameId}`)
   }
 
   public move({ gameId, move }: { gameId: string; move: string }) {

@@ -31,8 +31,7 @@
     "verbose": true,
     "testPathIgnorePatterns": [
       "minors.test.ts",
-      "bot.test.ts",
-      "study.test.ts"
+      "bot.test.ts"
     ]
   },
   "prettier": {

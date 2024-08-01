@@ -50,7 +50,7 @@ export class Users {
 }
 
 export class User {
-  constructor(private readonly fetcher: Function) {}
+  constructor(private readonly fetcher: Function, private readonly streamer: Function) {}
 
   public info({ username }: { username: string }) {
     return this.fetcher(`/user/${username}`)
@@ -97,8 +97,7 @@ export class User {
     return this.fetcher(`/rel/unfollow/${username}`, 'post')
   }
 
-  public studies({ username }: { username: string }) {
-    // TODO: replace with stream API
-    return this.fetcher(`/study/by/${username}`)
+  public async studies({ username }: { username: string }) {
+    return this.streamer(`/study/by/${username}`)
   }
 }

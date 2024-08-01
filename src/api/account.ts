@@ -1,5 +1,5 @@
 export class Account {
-  constructor(private readonly fetcher: Function) {}
+  constructor(private readonly fetcher: Function, private readonly streamer: Function) {}
 
   public profile() {
     return this.fetcher(`/account`)
@@ -28,8 +28,7 @@ export class Account {
     return this.fetcher(`/account/playing?nb=${limit}`)
   }
 
-  // TODO: NDJSON
-  // public following() {
-  //   return this.fetcher(`/rel/following`)
-  // }
+  public following() {
+      return this.streamer(`/rel/following`)
+  }
 }

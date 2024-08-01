@@ -7,6 +7,7 @@ describe('study.chapter()', () => {
       chapterId: 'E9SccSB6',
     })
     expect(chapter.error).toBeUndefined()
+    expect(chapter.status).toBe(200)
   })
 })
 
@@ -14,6 +15,7 @@ describe('study.chapters()', () => {
   it('should get chapters', async () => {
     const chapters = await lichess.study.chapters({ studyId: 'KjivNw7F' })
     expect(chapters.error).toBeUndefined()
+    expect(chapters.status).toBe(200)
   })
 })
 
@@ -21,6 +23,8 @@ describe('study.studies()', () => {
   it('should get all studies via username', async () => {
     const studies = await lichess.study.studies({ username: 'Nickacide' })
     expect(studies.body).toBeDefined()
+    expect(studies.error).toBeUndefined()
+    expect(studies.status).toBe(200)
   })
 })
 
@@ -41,5 +45,16 @@ describe('study.import()', () => {
       name,
     })
     expect(chapters.status).toBe(200)
+    expect(chapters.error).toBeUndefined()
   })
+})
+
+describe('user.studies()', () => {
+    it('should retrieve all studies of user', async () => {
+        let studies = await lichess.user.studies({ username: 'nickacide' })
+        expect(studies).toBeInstanceOf(ReadableStream)
+        for await (const chunk of studies) {
+            expect(chunk.error).toBeUndefined()
+        }
+    })
 })

@@ -1,5 +1,5 @@
 export class Bot {
-  constructor(private readonly fetcher: Function) {}
+  constructor(private readonly fetcher: Function, private readonly streamer: Function) {}
 
   public online({ nb }: { nb?: number } = {}) {
     return this.fetcher(`/bot/online?nb=${nb}`)
@@ -10,7 +10,7 @@ export class Bot {
   }
 
   public stream({ gameId }: { gameId: string }) {
-    return this.fetcher(`/bot/game/stream/${gameId}`)
+    return this.streamer(`/bot/game/stream/${gameId}`)
   }
 
   public move({ gameId, move }: { gameId: string; move: string }) {
