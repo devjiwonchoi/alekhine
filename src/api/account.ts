@@ -1,35 +1,53 @@
+import { JSONStream } from '../utils.ts'
+
 export class Account {
   constructor(private readonly fetcher: Function) {}
 
-  public profile() {
-    return this.fetcher(`/account`)
+  public async profile() {
+    const response = await this.fetcher(`/api/account`)
+    const json = await response.json()
+    return json
   }
 
-  public email() {
-    return this.fetcher(`/account/email`)
+  public async email() {
+    const response = await this.fetcher(`/api/account/email`)
+    const json = await response.json()
+    return json
   }
 
-  public preferences() {
-    return this.fetcher(`/account/preferences`)
+  public async preferences() {
+    const response = await this.fetcher(`/api/account/preferences`)
+    const json = await response.json()
+    return json
   }
 
-  public kidMode({ enable }: { enable?: boolean } = {}) {
-    return this.fetcher(
-      `/account/kid?v=${enable}`,
-      enable !== undefined ? 'post' : 'get',
-    )
+  public async kidMode({ enable }: { enable?: boolean } = {}) {
+    const response = await this.fetcher(
+      `/api/account/kid?v=${enable}`,
+      enable !== undefined ? 'post' : 'get')
+    const json = await response.json()
+    return json
+
   }
 
-  public challenges() {
-    return this.fetcher(`/challenge`)
+  public async challenges() {
+    const response = await this.fetcher(`/api/challenge`)
+    const json = await response.json()
+    return json
   }
 
-  public ongoing({ limit }: { limit?: number } = {}) {
-    return this.fetcher(`/account/playing?nb=${limit}`)
+  public async ongoing({ limit }: { limit?: number } = {}) {
+    const response = await this.fetcher(`/api/account/playing?nb=${limit}`)
+    const json = await response.json()
+    return json
   }
 
-  // TODO: NDJSON
-  // public following() {
-  //   return this.fetcher(`/rel/following`)
-  // }
+  public async following() {
+    const response = await this.fetcher(`/api/rel/following`)
+    // Decode the stream and then parse it into JSON
+    const stream = response.body
+    const text = await stream.pipeThrough(new TextDecoderStream())
+    const json = await text.pipeThrough(new JSONStream())
+    return json
+  }
 }

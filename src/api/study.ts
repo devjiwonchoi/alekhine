@@ -3,7 +3,7 @@ export class Study {
   constructor(private readonly fetcher: Function) {}
 
   /// Export a single chapter.
-  public chapter({
+  public async chapter({
     studyId,
     chapterId,
     clocks = true,
@@ -12,18 +12,20 @@ export class Study {
     source = false,
     orientation = false,
   }: StudyExport) {
-    let params = new URLSearchParams({
+    const params = new URLSearchParams({
       clocks: String(clocks),
       comments: String(comments),
       variations: String(variations),
       source: String(source),
       orientation: String(orientation),
     })
-    return this.fetcher(`/study/${studyId}/${chapterId}.pgn?${params}`)
+    const response = await this.fetcher(`/api/study/${studyId}/${chapterId}.pgn?${params}`, 'get', undefined, false)
+    const text = await response.text()
+    return text
   }
 
   /// Export all chapters of a study.
-  public chapters({
+  public async chapters({
     studyId,
     clocks = true,
     comments = true,
@@ -31,18 +33,20 @@ export class Study {
     source = false,
     orientation = false,
   }: StudyExport) {
-    let params = new URLSearchParams({
+    const params = new URLSearchParams({
       clocks: String(clocks),
       comments: String(comments),
       variations: String(variations),
       source: String(source),
       orientation: String(orientation),
     })
-    return this.fetcher(`/study/${studyId}.pgn?${params}`)
+    const response = await this.fetcher(`/api/study/${studyId}.pgn?${params}`, 'get', undefined, false)
+    const text = await response.text()
+    return text
   }
 
   /// Export all studies of a user.
-  public studies({
+  public async studies({
     username,
     clocks = true,
     comments = true,
@@ -50,41 +54,45 @@ export class Study {
     source = false,
     orientation = false,
   }: StudyExport) {
-    let params = new URLSearchParams({
+    const params = new URLSearchParams({
       clocks: String(clocks),
       comments: String(comments),
       variations: String(variations),
       source: String(source),
       orientation: String(orientation),
     })
-    return this.fetcher(
+    const response = await this.fetcher(
       `/study/by/${username}/export.pgn?${params}`,
       'get',
       undefined,
-      false,
-    )
+      false)
+    const json = await response.json()
+    return json
   }
 
   /// Retrieve only the study headers (metadata) of a study.
-  public meta({ studyId }: { studyId: string }) {
-    return this.fetcher(`/study/${studyId}.pgn`, 'head', undefined, false)
+  public async meta({ studyId }: { studyId: string }) {
+    const response = await this.fetcher(`/api/study/${studyId}.pgn`, 'head', undefined, false)
+    const text = await response.text()
+    return text
   }
 
   /// Import PGN into an existing study.
-  public import({
+  public async import({
     studyId,
     name,
     pgn,
     orientation = 'white',
     variant = 'standard',
   }: StudyImport) {
-    let params = new URLSearchParams({ name, pgn, orientation, variant })
-    return this.fetcher(
-      `/study/${studyId}/import-pgn?${params}`,
+    const params = new URLSearchParams({ name, pgn, orientation, variant })
+    const response = await this.fetcher(
+      `/api/study/${studyId}/import-pgn?${params}`,
       'post',
       undefined,
-      false,
-    )
+      false)
+    const text = await response.text()
+    return text
   }
 
   // The study list is defined on `User`.

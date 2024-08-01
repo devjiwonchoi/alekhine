@@ -1,23 +1,31 @@
 export class Bot {
   constructor(private readonly fetcher: Function) {}
 
-  public online({ nb }: { nb?: number } = {}) {
-    return this.fetcher(`/bot/online?nb=${nb}`)
+  public async online({ nb }: { nb?: number } = {}) {
+    const response = await this.fetcher(`/api/bot/online?nb=${nb}`)
+    const json = await response.json()
+    return json
   }
 
-  public upgrade() {
-    return this.fetcher(`/bot/account/upgrade`, 'post')
+  public async upgrade() {
+    const response = await this.fetcher(`/api/bot/account/upgrade`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public stream({ gameId }: { gameId: string }) {
-    return this.fetcher(`/bot/game/stream/${gameId}`)
+  public async stream({ gameId }: { gameId: string }) {
+    const response = await this.fetcher(`/api/bot/game/stream/${gameId}`)
+    const json = await response.json()
+    return json
   }
 
-  public move({ gameId, move }: { gameId: string; move: string }) {
-    return this.fetcher(`/bot/game/${gameId}/move/${move}`, 'post')
+  public async move({ gameId, move }: { gameId: string; move: string }) {
+    const response = await this.fetcher(`/api/bot/game/${gameId}/move/${move}`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public chat({
+  public async chat({
     gameId,
     room,
     text,
@@ -27,18 +35,23 @@ export class Bot {
     text?: string
   }) {
     const isSendingChat = !!(room && text)
-    return this.fetcher(
-      `/bot/game/${gameId}/chat`,
+    const response = await this.fetcher(
+      `/api/bot/game/${gameId}/chat`,
       isSendingChat ? 'post' : 'get',
-      isSendingChat ? new URLSearchParams({ room, text }) : undefined,
-    )
+      isSendingChat ? new URLSearchParams({ room, text }) : undefined)
+    const json = await response.json()
+    return json
   }
 
-  public abort({ gameId }: { gameId: string }) {
-    return this.fetcher(`/bot/game/${gameId}/abort`, 'post')
+  public async abort({ gameId }: { gameId: string }) {
+    const response = await return this.fetcher(`/api/bot/game/${gameId}/abort`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public resign({ gameId }: { gameId: string }) {
-    return this.fetcher(`/bot/game/${gameId}/resign`, 'post')
+  public async resign({ gameId }: { gameId: string }) {
+    const response = await this.fetcher(`/api/bot/game/${gameId}/resign`, 'post')
+    const json = await response.json()
+    return json
   }
 }

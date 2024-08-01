@@ -2,24 +2,32 @@ import type { ChallengeAI, ChallengeOpen } from '../types'
 export class Challenge {
   constructor(private readonly fetcher: Function) {}
 
-  public create({ username }: { username: string }) {
-    return this.fetcher(`/challenge/${username}`, 'post')
+  public async create({ username }: { username: string }) {
+    const response = await this.fetcher(`/api/challenge/${username}`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public accept({ challengeId }: { challengeId: string }) {
-    return this.fetcher(`/challenge/${challengeId}/accept`, 'post')
+  public async accept({ challengeId }: { challengeId: string }) {
+    const response = await this.fetcher(`/api/challenge/${challengeId}/accept`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public decline({ challengeId }: { challengeId: string }) {
-    return this.fetcher(`/challenge/${challengeId}/decline`, 'post')
+  public async decline({ challengeId }: { challengeId: string }) {
+    const response = await this.fetcher(`/api/challenge/${challengeId}/decline`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public cancel({ challengeId }: { challengeId: string }) {
-    return this.fetcher(`/challenge/${challengeId}/cancel`, 'post')
+  public async cancel({ challengeId }: { challengeId: string }) {
+    const response = await this.fetcher(`/api/challenge/${challengeId}/cancel`, 'post')
+    const json = await response.json()
+    return json
   }
 
   // TODO: refactor
-  public ai({
+  public async ai({
     level,
     clockLimit,
     clockIncrement,
@@ -37,11 +45,13 @@ export class Challenge {
     if (color) params.append('color', color)
     if (variant) params.append('variant', variant)
     if (fen) params.append('fen', fen)
-    return this.fetcher(`/challenge/ai`, 'post', params)
+    const response = await this.fetcher(`/api/challenge/ai`, 'post', params)
+    const json = await response.json()
+    return json
   }
 
   // TODO: refactor
-  public open({
+  public async open({
     rated,
     clockLimit,
     clockIncrement,
@@ -71,10 +81,12 @@ export class Challenge {
       params.append('users', users.toString())
     }
     if (expiresAt) params.append('expiresAt', expiresAt.toString())
-    return this.fetcher(`/challenge/open`, 'post', params)
+    const response = await this.fetcher(`/api/challenge/open`, 'post', params)
+    const json = await response.json()
+    return json
   }
 
-  public start({
+  public async start({
     gameId,
     token1,
     token2,
@@ -83,17 +95,20 @@ export class Challenge {
     token1: string
     token2: string
   }) {
-    return this.fetcher(
-      `/challenge/${gameId}/start-clocks?token1=${token1}&token2=${token2}`,
-      'post',
-    )
+    const response = await this.fetcher(
+      `/api/challenge/${gameId}/start-clocks?token1=${token1}&token2=${token2}`,
+      'post')
+    const json = await response.json()
+    return json
   }
 
-  public grant({ gameId, seconds }: { gameId: string; seconds: number }) {
-    return this.fetcher(`/round/${gameId}/add-time/${seconds}`, 'post')
+  public async grant({ gameId, seconds }: { gameId: string; seconds: number }) {
+    const response = await this.fetcher(`/api/round/${gameId}/add-time/${seconds}`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public admin({
+  public async admin({
     users,
     description,
   }: {
@@ -107,6 +122,8 @@ export class Challenge {
       params.append('users', users.toString())
     }
     if (description) params.append('description', description)
-    return this.fetcher(`/challenge/admin`, 'post', params)
+    const response = await this.fetcher(`/api/challenge/admin`, 'post', params)
+    const json = await response.json()
+    return json
   }
 }

@@ -2,7 +2,7 @@ export class Board {
   constructor(private readonly fetcher: Function) {}
 
   public events() {
-    return this.fetcher(`/stream/event`)
+    return this.fetcher(`/api/stream/event`)
   }
 
   // TODO: seek()
@@ -49,19 +49,22 @@ export class Board {
   //   return undefined
   // }
 
-  public stream({ gameId }: { gameId: string }) {
-    return this.fetcher(`/board/game/stream/${gameId}`)
+  public async stream({ gameId }: { gameId: string }) {
+    const response = await this.fetcher(`/api/board/game/stream/${gameId}`)
+    const json = await response.json()
+    return json
   }
 
-  public move({ gameId, move }: { gameId: string; move: string }) {
+  public async move({ gameId, move }: { gameId: string; move: string }) {
     const offerDraw = move === 'draw'
-    return this.fetcher(
-      `/board/game/${gameId}/move/${move}?offeringDraw=${offerDraw}`,
-      'post',
-    )
+    const response = await this.fetcher(
+      `/api/board/game/${gameId}/move/${move}?offeringDraw=${offerDraw}`,
+      'post')
+    const json = await response.json()
+    return json
   }
 
-  public chat({
+  public async chat({
     gameId,
     room,
     text,
@@ -71,34 +74,47 @@ export class Board {
     text?: string
   }) {
     const isSendingChat = !!(room && text)
-    return this.fetcher(
-      `/board/game/${gameId}/chat`,
+    const response = await this.fetcher(
+      `/api/board/game/${gameId}/chat`,
       isSendingChat ? 'post' : 'get',
-      isSendingChat ? new URLSearchParams({ room, text }) : undefined,
-    )
+      isSendingChat ? new URLSearchParams({ room, text }) : undefined)
+    const json = await response.json()
+    return json
   }
 
-  public abort({ gameId }: { gameId: string }) {
-    return this.fetcher(`/board/game/${gameId}/abort`, 'post')
+  public async abort({ gameId }: { gameId: string }) {
+    const response = await this.fetcher(`/api/board/game/${gameId}/abort`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public resign({ gameId }: { gameId: string }) {
-    return this.fetcher(`/board/game/${gameId}/resign`, 'post')
+  public async resign({ gameId }: { gameId: string }) {
+    const response = await this.fetcher(`/api/board/game/${gameId}/resign`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public draw({ gameId, accept }: { gameId: string; accept: boolean }) {
-    return this.fetcher(`/board/game/${gameId}/draw/${accept}`, 'post')
+  public async draw({ gameId, accept }: { gameId: string; accept: boolean }) {
+    const response = await this.fetcher(`/api/board/game/${gameId}/draw/${accept}`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public takeback({ gameId, accept }: { gameId: string; accept: boolean }) {
-    return this.fetcher(`/board/game/${gameId}/takeback/${accept}`, 'post')
+  public async takeback({ gameId, accept }: { gameId: string; accept: boolean }) {
+    const response = await this.fetcher(`/api/board/game/${gameId}/takeback/${accept}`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public victory({ gameId }: { gameId: string }) {
-    return this.fetcher(`/board/game/${gameId}/claim-victory`, 'post')
+  public async victory({ gameId }: { gameId: string }) {
+    const response = await this.fetcher(`/api/board/game/${gameId}/claim-victory`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public berserk({ gameId }: { gameId: string }) {
-    return this.fetcher(`/board/game/${gameId}/berserk`, 'post')
+  public async berserk({ gameId }: { gameId: string }) {
+    const response = await this.fetcher(`/api/board/game/${gameId}/berserk`, 'post')
+    const json = await response.json()
+    return json
   }
 }

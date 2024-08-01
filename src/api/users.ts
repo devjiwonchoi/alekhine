@@ -1,15 +1,20 @@
 import { GetUsers, GetUser } from '../types'
+import { JSONStream } from '../utils.ts'
 
 class LeaderBoard {
   constructor(private readonly fetcher: Function) {}
 
-  public info({ nb, perfType }: { nb: number; perfType: string }) {
-    return this.fetcher(`/player/top/${nb}/${perfType}`)
+  public async info({ nb, perfType }: { nb: number; perfType: string }) {
+    const response = await this.fetcher(`/api/player/top/${nb}/${perfType}`)
+    const json = await response.json()
+    return json
   }
 
   // TODO: define perfTypes
-  public topTens() {
-    return this.fetcher(`/player`)
+  public async topTens() {
+    const response = await this.fetcher(`/api/player`)
+    const json = await response.json()
+    return json
   }
 }
 
@@ -20,19 +25,23 @@ export class Users {
     this.leaderboard = new LeaderBoard(this.fetcher)
   }
 
-  public info({ ids }: GetUsers) {
+  public async info({ ids }: GetUsers) {
     if (Array.isArray(ids)) ids = ids.join(',')
     ids = ids.replace(/\s/g, '')
-    return this.fetcher(`/users`, 'post', ids)
+    const response = await this.fetcher(`/api/users`, 'post', ids)
+    const json = await response.json()
+    return json
   }
 
-  public status({ ids }: GetUsers) {
+  public async status({ ids }: GetUsers) {
     if (Array.isArray(ids)) ids = ids.join(',')
     ids = ids.replace(/\s/g, '')
-    return this.fetcher(`/users/status?ids=${ids}`)
+    const response = await this.fetcher(`/api/users/status?ids=${ids}`)
+    const json = await response.json()
+    return json
   }
 
-  public crosstable({
+  public async crosstable({
     user1,
     user2,
     matchup = false,
@@ -41,64 +50,86 @@ export class Users {
     user2: string
     matchup?: boolean
   }) {
-    return this.fetcher(`/crosstable/${user1}/${user2}?matchup=${matchup}`)
+    const response = await this.fetcher(`/api/crosstable/${user1}/${user2}?matchup=${matchup}`)
+    const json = await response.json()
+    return json
   }
 
-  public streaming() {
-    return this.fetcher(`/streamer/live`)
+  public async streaming() {
+    const response = await this.fetcher(`/api/streamer/live`)
+    const json = await response.json()
+    return json
   }
 }
 
 export class User {
   constructor(private readonly fetcher: Function) {}
 
-  public info({ username }: { username: string }) {
-    return this.fetcher(`/user/${username}`)
+  public async info({ username }: { username: string }) {
+    const response = await this.fetcher(`/api/user/${username}`)
+    const json = await response.json()
+    return json
   }
 
-  public history({ username }: { username: string }) {
-    return this.fetcher(`/user/${username}/rating-history`)
+  public async history({ username }: { username: string }) {
+    const response = await this.fetcher(`/api/user/${username}/rating-history`)
+    const json = await response.json()
+    return json
   }
 
-  public performance({
+  public async performance({
     username,
     perfType,
   }: {
     username: string
     perfType: string
   }) {
-    return this.fetcher(`/user/${username}/perf/${perfType}`)
+    const response = await this.fetcher(`/api/user/${username}/perf/${perfType}`)
+    const json = await response.json()
+    return json
   }
 
-  public activity({ username }: { username: string }) {
-    return this.fetcher(`/user/${username}/activity`)
+  public async activity({ username }: { username: string }) {
+    const response = await this.fetcher(`/api/user/${username}/activity`)
+    const json = await response.json()
+    return json
   }
 
-  public autocomplete({ term, details = false, friendPrior = false }: GetUser) {
-    return this.fetcher(
-      `/player/autocomplete?term=${term}&object=${details}&friend=${friendPrior}`,
-    )
+  public async autocomplete({ term, details = false, friendPrior = false }: GetUser) {
+    const response = await this.fetcher(
+      `/api/player/autocomplete?term=${term}&object=${details}&friend=${friendPrior}`)
+    const json = await response.json()
+    return json
   }
 
-  public note({ username, text }: { username: string; text?: string }) {
+  public async note({ username, text }: { username: string; text?: string }) {
     const hasText = typeof text === 'string' && text.length > 0
-    return this.fetcher(
-      `/user/${username}/note`,
+    const response = await this.fetcher(
+      `/api/user/${username}/note`,
       hasText ? 'post' : 'get',
-      hasText ? new URLSearchParams({ text }) : undefined,
-    )
+      hasText ? new URLSearchParams({ text }) : undefined)
+    const json = await response.json()
+    return json
   }
 
-  public follow({ username }: { username: string }) {
-    return this.fetcher(`/rel/follow/${username}`, 'post')
+  public async follow({ username }: { username: string }) {
+    const response = await this.fetcher(`/api/rel/follow/${username}`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public unfollow({ username }: { username: string }) {
-    return this.fetcher(`/rel/unfollow/${username}`, 'post')
+  public async unfollow({ username }: { username: string }) {
+    const response = await this.fetcher(`/api/rel/unfollow/${username}`, 'post')
+    const json = await response.json()
+    return json
   }
 
-  public studies({ username }: { username: string }) {
-    // TODO: replace with stream API
-    return this.fetcher(`/study/by/${username}`)
+  public async studies({ username }: { username: string }) {
+    const response = await this.fetcher(`/api/study/by/${username}`)
+    // Decode stream and parse it into JSON
+    const stream = response.body
+    const text = await stream.pipeThrough(new TextDecoderStream())
+    const json = await text.pipeThrough(new JSONStream())
+    return json
   }
 }
